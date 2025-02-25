@@ -2,16 +2,20 @@ import logging
 import os
 from typing import List
 
+# Load environment variables FIRST
+from dotenv import load_dotenv
+load_dotenv()
+
 import uvicorn
 from pydantic import BaseModel
-from dotenv import load_dotenv
 import gradio as gr
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from ExampleAgency.agency import agency
+# Now import agency after environment variables are loaded
+from personal_assistant_agency.agency import agency
 from utils.demo_gradio_override import demo_gradio_override
 
 APP_TOKEN = os.getenv("APP_TOKEN")
@@ -19,7 +23,6 @@ APP_TOKEN = os.getenv("APP_TOKEN")
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-load_dotenv()
 # Initialize FastAPI application
 app = FastAPI()
 
@@ -45,12 +48,15 @@ app.add_middleware(
 agency.demo_gradio = demo_gradio_override
 # Mount the gradio interface
 gradio_interface = agency.demo_gradio(agency)
-app = gr.mount_gradio_app(app, gradio_interface, path="/demo-gradio", root_path="/demo-gradio")
+app = gr.mount_gradio_app(
+    app, gradio_interface, path="/demo-gradio", root_path="/demo-gradio"
+)
 
 security = HTTPBearer()
 
 
 # Models
+
 
 class AttachmentTool(BaseModel):
     type: str
@@ -67,6 +73,7 @@ class AgencyRequest(BaseModel):
 
 
 # Token verification
+
 
 async def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials

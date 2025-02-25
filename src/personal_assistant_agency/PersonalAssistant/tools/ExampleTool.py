@@ -2,9 +2,8 @@ from agency_swarm.tools import BaseTool
 from pydantic import Field
 import os
 
-ACCOUNT_ID = "MY_ACCOUNT_ID"
-API_KEY = os.getenv("MY_API_KEY")
-
+account_id = "MY_ACCOUNT_ID"
+api_key = os.getenv("MY_API_KEY") # or access_token = os.getenv("MY_ACCESS_TOKEN")
 
 class ExampleTool(BaseTool):
     """
@@ -15,8 +14,7 @@ class ExampleTool(BaseTool):
 
     # Define the fields with descriptions using Pydantic Field
     example_field: str = Field(
-        ...,
-        description="Description of the example field, explaining its purpose and usage for the Agent.",
+        ..., description="Description of the example field, explaining its purpose and usage for the Agent."
     )
 
     def run(self):
@@ -26,12 +24,7 @@ class ExampleTool(BaseTool):
         Docstring is not required for this method and will not be used by the agent.
         """
         # Your custom tool logic goes here
-        # do_something(self.example_field, API_KEY, ACCOUNT_ID)
+        # do_something(self.example_field, api_key, account_id)
 
         # Return the result of the tool's operation as a string
         return "Result of ExampleTool operation"
-
-
-if __name__ == "__main__":
-    tool = ExampleTool(example_field="Hello, world!")
-    print(tool.run())
