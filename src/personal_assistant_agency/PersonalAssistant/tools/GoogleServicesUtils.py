@@ -97,7 +97,12 @@ class GoogleServicesUtils(BaseTool):
         """Create new token using credentials.json"""
         if self.credentials_path and os.path.exists(self.credentials_path):
             try:
-                flow = InstalledAppFlow.from_client_secrets_file(self.credentials_path, SCOPES)
+                flow = InstalledAppFlow.from_client_secrets_file(
+                    self.credentials_path, 
+                    SCOPES,
+                    access_type='offline',
+                    include_refresh_token=True
+                )
                 creds = flow.run_local_server(port=0)
                 if self.token_path:
                     with open(self.token_path, 'wb') as token:
